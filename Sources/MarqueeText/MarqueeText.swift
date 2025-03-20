@@ -1,5 +1,5 @@
 import SwiftUI
-
+import Combine
 public struct MarqueeText: View {
     public var text: String
     public var font: UIFont
