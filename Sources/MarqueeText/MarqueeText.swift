@@ -8,7 +8,9 @@ public struct MarqueeText: View {
     public var startDelay: Double
     public var alignment: Alignment
     
+    @State private var textPublisher = PassthroughSubject<String, Never>()
     @State private var animate = false
+    
     var isCompact = false
     
     public var body: some View {
@@ -59,9 +61,9 @@ public struct MarqueeText: View {
                     Text(text)
                         .font(.init(font))
                         .onReceive(Just(text)) { _ in
-    self.animate = false // No scrolling needed
-}
-
+                            self.animate = false // No scrolling needed
+                        }
+                    
                         .frame(
                             minWidth: 0,
                             maxWidth: .infinity,
@@ -75,13 +77,13 @@ public struct MarqueeText: View {
                 // Trigger scrolling if needed
                 self.animate = needsScrolling
             }
-            .onChange(of: text) { newValue in
+            .onReceive(textPublisher) { newValue in
                 let newStringWidth = newValue.widthOfString(usingFont: font)
                 if newStringWidth > geo.size.width {
-                    // Stop the old animation first
+                    // Eski animasyonu durdur
                     self.animate = false
                     
-                    // Kick off a new animation on the next runloop
+                    // Yeni animasyonu bir sonraki döngüde başlat
                     DispatchQueue.main.async {
                         self.animate = true
                     }
@@ -193,3 +195,4 @@ extension String {
         return size.height
     }
 }
+
