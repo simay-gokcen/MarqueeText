@@ -58,9 +58,10 @@ public struct MarqueeText: View {
                     // MARK: - Non-scrolling version
                     Text(text)
                         .font(.init(font))
-                        .onChange(of: text) { _ in
-                            self.animate = false // No scrolling needed
-                        }
+                        .onReceive(Just(text)) { _ in
+    self.animate = false // No scrolling needed
+}
+
                         .frame(
                             minWidth: 0,
                             maxWidth: .infinity,
